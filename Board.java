@@ -1,8 +1,12 @@
 package mines;
 
+/*
+ * This class creates the GUI for playing
+ * the classic Minesweepr game.  
+ */
+
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 
 public class Board extends JFrame {
@@ -16,8 +20,11 @@ public class Board extends JFrame {
 	private JRadioButton small,medium,large;
 	private JPanel minefield, radioPanel, buttonPanel;
 
+	/*
+	 * This constructor method creates the Board GUI.
+	 */
 	public Board(){
-		cp = getContentPane();
+            cp = getContentPane();
 	    cp.setLayout(new FlowLayout()); 
 	    
 	    /* create three minefield size options */
@@ -85,6 +92,7 @@ public class Board extends JFrame {
 	    
 	    newG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				reset();
 				int r = jm.length;
 				int c = jm[0].length;
 				cp.remove(minefield);
@@ -96,6 +104,10 @@ public class Board extends JFrame {
 	    });
 	}
 	
+	/*
+	 * This method reveals the locations of all the mines on 
+	 * the board.
+	 */
 	public void showAllMines(){
 		for (int i=0;i<jm.length;i++){
 			for (int j=0;j<jm[i].length;j++){
@@ -105,6 +117,12 @@ public class Board extends JFrame {
 		}
 	}
 	
+	/*
+	 * This method resets the minefield by enabling all 
+	 * the buttons, hiding all danger count values again,
+	 * and setting the flagged and question properties back 
+	 * to false. 
+	*/
 	public void reset(){
 		for (int i=0;i<jm.length;i++){
 			for (int j=0;j<jm[i].length;j++){
@@ -128,6 +146,11 @@ public class Board extends JFrame {
 		mines.setText(s);
 	}
 	
+	/*
+	 * This method returns true if all the buttons in the
+	 * minefield have been pressed except for the buttons
+	 * containing mines.  Otherwise it returns false.
+	*/
 	public boolean checkWin(){
 		int enabled=0;
 		for (int i=0;i<jm.length;i++){
@@ -150,110 +173,121 @@ public class Board extends JFrame {
 		return false;
 	}
 	
+	/*
+	 * This method reveals all the spaces around
+	 * a button that is not adjacent to a mine. 
+	 * If any adjacent spaces are also not adjacent
+	 * to a mine, it will call itself on that button
+	 * as well.
+	 */
 	public void revealSpace(int i, int j){
 		JButton temp = jm[i][j];
 		
 		if (temp.isEnabled()){
-		temp.setBackground(Color.white);
-		temp.setText("");
-		temp.setEnabled(false);
-		
-		int r = jm.length-1;
-		int c = jm[0].length-1;
-		
-		if (i==0 && j==0){
-			if (ms.isBlank(0,1)) revealSpace(0,1);
-			else setDanger(0,1);
-			if (ms.isBlank(1,1)) revealSpace(1,1);
-			else setDanger(1,1);
-			if (ms.isBlank(1,0)) revealSpace(1,0);
-			else setDanger(1,0);
-		}else if (i==0 && j==c){
-			if (ms.isBlank(0,c-1)) revealSpace(0,c-1);
-			else setDanger(0,c-1);
-			if (ms.isBlank(1,c-1)) revealSpace(1,c-1);
-			else setDanger(1,c-1);
-			if (ms.isBlank(1,c)) revealSpace(1,c);
-			else setDanger(1,c);
-		}else if (i==r && j==0){
-			if (ms.isBlank(r-1,0)) revealSpace(r-1,0);
-			else setDanger(r-1,0);
-			if (ms.isBlank(r-1,1)) revealSpace(r-1,1);
-			else setDanger(r-1,1);
-			if (ms.isBlank(r,1)) revealSpace(r,1);
-			else setDanger(r,1);
-		}else if (i==r && j==c){
-			if (ms.isBlank(r,c-1)) revealSpace(r,c-1);
-			else setDanger(r,c-1);
-			if (ms.isBlank(r-1,c-1)) revealSpace(r-1,c-1);
-			else setDanger(r-1,c-1);
-			if (ms.isBlank(r-1,c)) revealSpace(r-1,c);
-			else setDanger(r-1,c);
-		}else if (i==0){
-			if (ms.isBlank(0,j-1)) revealSpace(0,j-1);
-			else setDanger(0,j-1);
-			if (ms.isBlank(0,j+1)) revealSpace(0,j+1);
-			else setDanger(0,j+1);
-			if (ms.isBlank(1,j-1)) revealSpace(1,j-1);
-			else setDanger(1,j-1);
-			if (ms.isBlank(1,j)) revealSpace(1,j);
-			else setDanger(1,j);
-			if (ms.isBlank(1,j+1)) revealSpace(1,j+1);
-			else setDanger(1,j+1);
-		}else if (i==r){
-			if (ms.isBlank(r-1,j-1)) revealSpace(r-1,j-1);
-			else setDanger(r-1,j-1);
-			if (ms.isBlank(r,j-1)) revealSpace(r,j-1);
-			else setDanger(r,j-1);
-			if (ms.isBlank(r-1,j)) revealSpace(r-1,j);
-			else setDanger(r-1,j);
-			if (ms.isBlank(r-1,j+1)) revealSpace(r-1,j+1);
-			else setDanger(r-1,j+1);
-			if (ms.isBlank(r,j+1)) revealSpace(r,j+1);
-			else setDanger(r,j+1);
-		}else if (j==0){
-			if (ms.isBlank(i-1,0)) revealSpace(i-1,0);
-			else setDanger(i-1,0);
-			if (ms.isBlank(i-1,1)) revealSpace(i-1,1);
-			else setDanger(i-1,1);
-			if (ms.isBlank(i,1)) revealSpace(i,1);
-			else setDanger(i,1);
-			if (ms.isBlank(i+1,0)) revealSpace(i+1,0);
-			else setDanger(i+1,0);
-			if (ms.isBlank(i+1,1)) revealSpace(i+1,1);
-			else setDanger(i+1,1);
-		}else if (j==c){
-			if (ms.isBlank(i-1,c-1)) revealSpace(i-1,c-1);
-			else setDanger(i-1,c-1);
-			if (ms.isBlank(i-1,c)) revealSpace(i-1,c);
-			else setDanger(i-1,c);
-			if (ms.isBlank(i,c-1)) revealSpace(i,c-1);
-			else setDanger(i,c-1);
-			if (ms.isBlank(i+1,c-1)) revealSpace(i+1,c-1);
-			else setDanger(i+1,c-1);
-			if (ms.isBlank(i+1,c)) revealSpace(i+1,c);
-			else setDanger(i+1,c);
-		}else{
-			if (ms.isBlank(i-1,j-1)) revealSpace(i-1,j-1);
-			else setDanger(i-1,j-1);
-			if (ms.isBlank(i-1,j)) revealSpace(i-1,j);
-			else setDanger(i-1,j);
-			if (ms.isBlank(i-1,j+1)) revealSpace(i-1,j+1);
-			else setDanger(i-1,j+1);
-			if (ms.isBlank(i,j-1)) revealSpace(i,j-1);
-			else setDanger(i,j-1);
-			if (ms.isBlank(i,j+1)) revealSpace(i,j+1);
-			else setDanger(i,j+1);
-			if (ms.isBlank(i+1,j-1)) revealSpace(i+1,j-1);
-			else setDanger(i+1,j-1);
-			if (ms.isBlank(i+1,j)) revealSpace(i+1,j);
-			else setDanger(i+1,j);
-			if (ms.isBlank(i+1,j+1)) revealSpace(i+1,j+1);
-			else setDanger(i+1,j+1);
-		}
+			temp.setBackground(Color.white);
+			temp.setText("");
+			temp.setEnabled(false);
+			
+			int r = jm.length-1;
+			int c = jm[0].length-1;
+			
+			if (i==0 && j==0){
+				if (ms.isBlank(0,1)) revealSpace(0,1);
+				else setDanger(0,1);
+				if (ms.isBlank(1,1)) revealSpace(1,1);
+				else setDanger(1,1);
+				if (ms.isBlank(1,0)) revealSpace(1,0);
+				else setDanger(1,0);
+			}else if (i==0 && j==c){
+				if (ms.isBlank(0,c-1)) revealSpace(0,c-1);
+				else setDanger(0,c-1);
+				if (ms.isBlank(1,c-1)) revealSpace(1,c-1);
+				else setDanger(1,c-1);
+				if (ms.isBlank(1,c)) revealSpace(1,c);
+				else setDanger(1,c);
+			}else if (i==r && j==0){
+				if (ms.isBlank(r-1,0)) revealSpace(r-1,0);
+				else setDanger(r-1,0);
+				if (ms.isBlank(r-1,1)) revealSpace(r-1,1);
+				else setDanger(r-1,1);
+				if (ms.isBlank(r,1)) revealSpace(r,1);
+				else setDanger(r,1);
+			}else if (i==r && j==c){
+				if (ms.isBlank(r,c-1)) revealSpace(r,c-1);
+				else setDanger(r,c-1);
+				if (ms.isBlank(r-1,c-1)) revealSpace(r-1,c-1);
+				else setDanger(r-1,c-1);
+				if (ms.isBlank(r-1,c)) revealSpace(r-1,c);
+				else setDanger(r-1,c);
+			}else if (i==0){
+				if (ms.isBlank(0,j-1)) revealSpace(0,j-1);
+				else setDanger(0,j-1);
+				if (ms.isBlank(0,j+1)) revealSpace(0,j+1);
+				else setDanger(0,j+1);
+				if (ms.isBlank(1,j-1)) revealSpace(1,j-1);
+				else setDanger(1,j-1);
+				if (ms.isBlank(1,j)) revealSpace(1,j);
+				else setDanger(1,j);
+				if (ms.isBlank(1,j+1)) revealSpace(1,j+1);
+				else setDanger(1,j+1);
+			}else if (i==r){
+				if (ms.isBlank(r-1,j-1)) revealSpace(r-1,j-1);
+				else setDanger(r-1,j-1);
+				if (ms.isBlank(r,j-1)) revealSpace(r,j-1);
+				else setDanger(r,j-1);
+				if (ms.isBlank(r-1,j)) revealSpace(r-1,j);
+				else setDanger(r-1,j);
+				if (ms.isBlank(r-1,j+1)) revealSpace(r-1,j+1);
+				else setDanger(r-1,j+1);
+				if (ms.isBlank(r,j+1)) revealSpace(r,j+1);
+				else setDanger(r,j+1);
+			}else if (j==0){
+				if (ms.isBlank(i-1,0)) revealSpace(i-1,0);
+				else setDanger(i-1,0);
+				if (ms.isBlank(i-1,1)) revealSpace(i-1,1);
+				else setDanger(i-1,1);
+				if (ms.isBlank(i,1)) revealSpace(i,1);
+				else setDanger(i,1);
+				if (ms.isBlank(i+1,0)) revealSpace(i+1,0);
+				else setDanger(i+1,0);
+				if (ms.isBlank(i+1,1)) revealSpace(i+1,1);
+				else setDanger(i+1,1);
+			}else if (j==c){
+				if (ms.isBlank(i-1,c-1)) revealSpace(i-1,c-1);
+				else setDanger(i-1,c-1);
+				if (ms.isBlank(i-1,c)) revealSpace(i-1,c);
+				else setDanger(i-1,c);
+				if (ms.isBlank(i,c-1)) revealSpace(i,c-1);
+				else setDanger(i,c-1);
+				if (ms.isBlank(i+1,c-1)) revealSpace(i+1,c-1);
+				else setDanger(i+1,c-1);
+				if (ms.isBlank(i+1,c)) revealSpace(i+1,c);
+				else setDanger(i+1,c);
+			}else{
+				if (ms.isBlank(i-1,j-1)) revealSpace(i-1,j-1);
+				else setDanger(i-1,j-1);
+				if (ms.isBlank(i-1,j)) revealSpace(i-1,j);
+				else setDanger(i-1,j);
+				if (ms.isBlank(i-1,j+1)) revealSpace(i-1,j+1);
+				else setDanger(i-1,j+1);
+				if (ms.isBlank(i,j-1)) revealSpace(i,j-1);
+				else setDanger(i,j-1);
+				if (ms.isBlank(i,j+1)) revealSpace(i,j+1);
+				else setDanger(i,j+1);
+				if (ms.isBlank(i+1,j-1)) revealSpace(i+1,j-1);
+				else setDanger(i+1,j-1);
+				if (ms.isBlank(i+1,j)) revealSpace(i+1,j);
+				else setDanger(i+1,j);
+				if (ms.isBlank(i+1,j+1)) revealSpace(i+1,j+1);
+				else setDanger(i+1,j+1);
+			}
 		}
 	}
 	
+	/*
+	 * This method reveals the danger count under a
+	 * button, or the number of mines it is adjacent to.
+	 */
 	public void setDanger(int i, int j){
 		JButton temp = jm[i][j];
 		String d = ms.getCell(i, j);
@@ -262,6 +296,11 @@ public class Board extends JFrame {
 		temp.setEnabled(false);
 	}
 	
+	/*
+	 * This method sets the minefield size and the size of
+	 * the GUI based on which minefield option size is selected;
+	 * 9 by 9, 16 by 16, or 16 by 30.
+	 */
 	public void setMinefield(int rows, int cols){
 		minefield = new JPanel(new GridLayout(rows,cols,0,0));
 		jm = new JButton[rows][cols];
@@ -302,6 +341,11 @@ public class Board extends JFrame {
 		mines.setText(s);
 	}
 	
+	/*
+	 * When a button in the minefield is clicked, this method
+	 * detects whether it was a right or left click and calls
+	 * the leftClick or rightClick methods, respectively.
+	 */
 	MouseAdapter click = new MouseAdapter(){
 		public void mousePressed(MouseEvent e) 
 		{
@@ -329,6 +373,14 @@ public class Board extends JFrame {
 		}
 	};
 	
+	/*
+	 * This method responds to a left click on a button in the minefield.
+	 * If the button is a mine it displays a loss message and shows the
+	 * location of all mines.  If the button is not adjacent to any mines
+	 * it calls the revealSpace method.  If the button is adjacent to a mine
+	 * it shows the danger count.  It does not allow flagged buttons to be
+	 * clicked.  It also checks for a victory scenario on every click.
+	 */
 	public void leftClick(int i, int j){
 		JButton temp = jm[i][j];
 		if (temp.isEnabled()){
@@ -358,6 +410,12 @@ public class Board extends JFrame {
 		}
 	}
 	
+	/*
+	 * This method responds to a right click on a button in the minefield.  
+	 * It flags a button as a mine if the button is blank,
+	 * sets the button to a question if it's flagged, or sets it 
+	 * to blank if it's set to question.
+	 */
 	public void rightClick(int i, int j){
 		JButton temp = jm[i][j];
 		if (temp.isEnabled()){
@@ -385,7 +443,6 @@ public class Board extends JFrame {
 				String s = String.valueOf(total);
 				mines.setText(s);
 			}
-			
 		}
 	}
 }
