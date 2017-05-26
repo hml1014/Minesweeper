@@ -1,2 +1,2 @@
 # Minesweeper
-copy of classic minesweeper game
+This is a copy of the classic game, Minesweeper.
